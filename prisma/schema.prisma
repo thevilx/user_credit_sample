@@ -1,0 +1,81 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id              String           @id @default(uuid())
+  email           String           @unique
+  name            String
+  balance         Decimal          @default(0) @db.Decimal(12, 2)
+  createdAt       DateTime         @default(now())
+  paymentRequests PaymentRequest[]
+  transactions    Transaction[]
+}
+
+model PaymentRequest {
+  id            String         @id @default(uuid())
+  userId        String
+  user          User           @relation(fields: [userId], references: [id])
+  amount        Decimal        @db.Decimal(12, 2)
+  reference     String         @unique // idempotency key
+  description   String?
+  status        PaymentStatus  @default(PENDING)
+  failureReason String?
+  retryCount    Int            @default(0)
+  maxRetries    Int            @default(3)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  transactions  Transaction[]
+  events        PaymentEvent[]
+}
+
+model Transaction {
+  id               String          @id @default(uuid())
+  userId           String
+  user             User            @relation(fields: [userId], references: [id])
+  paymentRequestId String
+  paymentRequest   PaymentRequest  @relation(fields: [paymentRequestId], references: [id])
+  amount           Decimal         @db.Decimal(12, 2)
+  type             TransactionType
+  reference        String
+  createdAt        DateTime        @default(now())
+}
+
+model PaymentEvent {
+  id               String         @id @default(uuid())
+  paymentRequestId String
+  paymentRequest   PaymentRequest @relation(fields: [paymentRequestId], references: [id])
+  type             EventType
+  metadata         Json?
+  createdAt        DateTime       @default(now())
+}
+
+enum PaymentStatus {
+  PENDING
+  QUEUED
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  CANCELLED
+}
+
+enum TransactionType {
+  DEBIT
+  CREDIT
+}
+
+enum EventType {
+  CREATED
+  QUEUED
+  PROCESSING_STARTED
+  SUCCEEDED
+  FAILED
+  RETRY_TRIGGERED
+  CANCELLED
+}
