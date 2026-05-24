@@ -28,7 +28,6 @@
 					],
 					"port": "3000",
 					"path": [
-						"api",
 						"payments"
 					]
 				}
@@ -49,7 +48,6 @@
 					],
 					"port": "3000",
 					"path": [
-						"api",
 						"payments",
 						"{{payment_id}}"
 					]
@@ -81,7 +79,6 @@
 					],
 					"port": "3000",
 					"path": [
-						"api",
 						"payments",
 						"credit"
 					]
@@ -103,7 +100,6 @@
 					],
 					"port": "3000",
 					"path": [
-						"api",
 						"payments",
 						"users"
 					]
@@ -125,7 +121,6 @@
 					],
 					"port": "3000",
 					"path": [
-						"api",
 						"payments",
 						"users",
 						"{{user_id}}",
