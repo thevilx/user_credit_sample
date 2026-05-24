@@ -3,6 +3,7 @@ import { RabbitMQService } from '../rabbitmq/rabbitmq.service';
 import { RedisService } from '../redis/redis.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { CreditUserDto } from './dto/credit-user.dto';
+import { RabbitMQEvents } from '../rabbitmq/rabbitmq.events';
 import { EventType, PaymentStatus, TransactionType } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { firstValueFrom } from 'rxjs';
@@ -52,7 +53,7 @@ export class PaymentsService implements OnModuleInit {
     });
 
     await firstValueFrom(
-      this.rmqClient.emit('process_payment', {
+      this.rmqClient.emit(RabbitMQEvents.PROCESS_PAYMENT, {
         paymentRequestId: paymentRequest.id,
       }),
     );

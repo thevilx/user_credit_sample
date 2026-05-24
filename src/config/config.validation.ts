@@ -23,10 +23,4 @@ export const configValidationSchema = Joi.object({
     REDIS_PASSWORD: Joi.string().allow(null).default(null),
     REDIS_DB: Joi.number().default(0),
 
-    // Email
-    EMAIL_HOST: Joi.string().required(),
-    EMAIL_PORT: Joi.number().default(587),
-    EMAIL_USER: Joi.string().required(),
-    EMAIL_PASSWORD: Joi.string().required(),
-    EMAIL_FROM: Joi.string().email().required(),
 });
